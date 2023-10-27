@@ -22,6 +22,7 @@ import com.uchuhimo.konf.source.ParseException
 import java.io.Serializable
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.util.Locale
 
 /**
  * Represents size in unit of bytes.
@@ -67,10 +68,9 @@ data class SizeInBytes(
                 )
 
             try {
-                val result: BigInteger
                 // if the string is purely digits, parse as an integer to avoid
                 // possible precision loss; otherwise as a double.
-                result = if (numberString.matches("[0-9]+".toRegex())) {
+                val result = if (numberString.matches("[0-9]+".toRegex())) {
                     units.bytes.multiply(BigInteger(numberString))
                 } else {
                     val resultDecimal = BigDecimal(units.bytes).multiply(BigDecimal(numberString))
@@ -122,7 +122,7 @@ data class SizeInBytes(
             ZEBIBYTES("zebi", Radix.KIBI, 7),
             YOBIBYTES("yobi", Radix.KIBI, 8);
 
-            internal val bytes: BigInteger = BigInteger.valueOf(radix.toInt().toLong()).pow(power)
+            val bytes: BigInteger = BigInteger.valueOf(radix.toInt().toLong()).pow(power)
 
             companion object {
 
@@ -136,7 +136,7 @@ data class SizeInBytes(
                             put("", unit) // no unit specified means bytes
                         } else {
                             val first = unit.prefix.substring(0, 1)
-                            val firstUpper = first.toUpperCase()
+                            val firstUpper = first.uppercase(Locale.getDefault())
                             when (unit.radix) {
                                 Radix.KILO -> {
                                     if (unit.power == 1) {
