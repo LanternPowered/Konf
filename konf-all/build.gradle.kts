@@ -8,7 +8,7 @@ snippetImplementation.extendsFrom(configurations.implementation.get())
 dependencies {
     for (name in listOf(
         ":konf-core",
-        ":konf-git",
+        //":konf-git",
         ":konf-hocon",
         ":konf-toml",
         ":konf-xml",

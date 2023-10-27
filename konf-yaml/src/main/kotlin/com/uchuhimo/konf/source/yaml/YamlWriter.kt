@@ -20,6 +20,7 @@ import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.Writer
 import com.uchuhimo.konf.source.base.toHierarchicalMap
 import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.SafeConstructor
 import org.yaml.snakeyaml.representer.Representer
@@ -30,8 +31,8 @@ import java.io.OutputStream
  */
 class YamlWriter(val config: Config) : Writer {
     private val yaml = Yaml(
-        SafeConstructor(),
-        Representer(),
+        SafeConstructor(LoaderOptions()),
+        Representer(DumperOptions()),
         DumperOptions().apply {
             defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
             lineBreak = DumperOptions.LineBreak.getPlatformLineBreak()

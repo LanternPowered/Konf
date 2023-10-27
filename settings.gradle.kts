@@ -9,7 +9,7 @@ rootProject.name = "konf"
 
 include(
     "konf-core",
-    "konf-git",
+    //"konf-git",
     "konf-hocon",
     "konf-js",
     "konf-toml",

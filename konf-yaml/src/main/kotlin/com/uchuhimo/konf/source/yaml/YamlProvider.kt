@@ -21,6 +21,7 @@ import com.uchuhimo.konf.source.Provider
 import com.uchuhimo.konf.source.RegisterExtension
 import com.uchuhimo.konf.source.Source
 import com.uchuhimo.konf.source.asSource
+import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.AbstractConstruct
 import org.yaml.snakeyaml.constructor.SafeConstructor
@@ -38,20 +39,20 @@ object YamlProvider : Provider {
     override fun reader(reader: Reader): Source {
         val yaml = Yaml(YamlConstructor())
         val value = yaml.load<Any>(reader)
-        if (value == "null") {
-            return mapOf<String, Any>().asSource("YAML")
+        return if (value == "null") {
+            mapOf<String, Any>().asSource("YAML")
         } else {
-            return value.asSource("YAML")
+            value.asSource("YAML")
         }
     }
 
     override fun inputStream(inputStream: InputStream): Source {
         val yaml = Yaml(YamlConstructor())
         val value = yaml.load<Any>(inputStream)
-        if (value == "null") {
-            return mapOf<String, Any>().asSource("YAML")
+        return if (value == "null") {
+            mapOf<String, Any>().asSource("YAML")
         } else {
-            return value.asSource("YAML")
+            value.asSource("YAML")
         }
     }
 
@@ -60,10 +61,10 @@ object YamlProvider : Provider {
     fun get() = this
 }
 
-private class YamlConstructor : SafeConstructor() {
+private class YamlConstructor : SafeConstructor(LoaderOptions()) {
     init {
         yamlConstructors[Tag.NULL] = object : AbstractConstruct() {
-            override fun construct(node: Node?): Any? {
+            override fun construct(node: Node?): Any {
                 if (node != null) {
                     constructScalar(node as ScalarNode)
                 }

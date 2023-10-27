@@ -3,23 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URL
 import java.util.Properties
 
-val ossUserToken by extra { getPrivateProperty("ossUserToken") }
-val ossUserPassword by extra { getPrivateProperty("ossUserPassword") }
-val signPublications by extra { getPrivateProperty("signPublications") }
-val useAliyun by extra { shouldUseAliyun() }
-
-tasks.named<Wrapper>("wrapper") {
-    gradleVersion = "7.0"
-    distributionType = Wrapper.DistributionType.ALL
-}
-
 buildscript {
     repositories {
-        if (shouldUseAliyun()) {
-            aliyunMaven()
-        } else {
-            mavenCentral()
-        }
+        mavenCentral()
     }
 }
 
@@ -53,16 +39,12 @@ allprojects {
     apply(plugin = "org.jetbrains.dokka")
 
     group = "com.uchuhimo"
-    version = "1.1.2"
+    version = "2.0.0-SNAPSHOT"
 
     repositories {
-        if (useAliyun) {
-            aliyunMaven()
-        } else {
-            mavenCentral()
-        }
+        mavenCentral()
         maven {
-            url=uri("https://kotlin.bintray.com/kotlinx")
+            url = uri("https://kotlin.bintray.com/kotlinx")
         }
     }
 
@@ -239,9 +221,26 @@ subprojects {
     val projectGroup = project.group as String
     val projectName = if (project.name == "konf-all") "konf" else project.name
     val projectVersion = project.version as String
-    val projectUrl = "https://github.com/uchuhimo/konf"
 
     publishing {
+        val repoUsername: String? by project
+        val repoPassword: String? by project
+        val repoUrl: String? by project
+
+        if (repoUrl == null || repoUsername == null || repoPassword == null)
+            return@publishing
+
+        repositories {
+            maven {
+                url = uri(repoUrl!!)
+                credentials {
+                    username = repoUsername
+                    password = repoPassword
+                }
+            }
+        }
+
+        val projectUrl: String by project
         publications {
             create<MavenPublication>("maven") {
                 from(components["java"])
@@ -270,6 +269,11 @@ subprojects {
                             name.set("uchuhimo")
                             email.set("uchuhimo@outlook.com")
                         }
+                        developer {
+                            id.set("Cybermaxke")
+                            name.set("Seppe Volkaerts")
+                            email.set("contact@seppevolkaerts.be")
+                        }
                     }
                     scm {
                         url.set(projectUrl)
@@ -277,20 +281,6 @@ subprojects {
                 }
             }
         }
-        repositories {
-            maven {
-                url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
-                credentials {
-                    username = ossUserToken
-                    password = ossUserPassword
-                }
-            }
-        }
-    }
-
-    signing {
-        setRequired({ signPublications == "true" })
-        sign(publishing.publications["maven"])
     }
 
     tasks {
