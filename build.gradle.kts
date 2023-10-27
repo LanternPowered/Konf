@@ -22,6 +22,7 @@ plugins {
     id("com.diffplug.spotless") version Versions.spotless
     id("com.github.ben-manes.versions") version Versions.dependencyUpdate
     id("org.jetbrains.dokka") version Versions.dokka
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
 allprojects {
@@ -38,7 +39,7 @@ allprojects {
     apply(plugin = "com.github.ben-manes.versions")
     apply(plugin = "org.jetbrains.dokka")
 
-    group = "com.uchuhimo"
+    group = "org.lanternpowered"
     version = "2.0.0-SNAPSHOT"
 
     repositories {
@@ -199,7 +200,7 @@ subprojects {
                 reportUndocumented.set(false)
                 sourceLink {
                     localDirectory.set(file("./"))
-                    remoteUrl.set(URL("https://github.com/uchuhimo/konf/blob/v${project.version}/"))
+                    remoteUrl.set(URL("https://github.com/LanternPowered/konf/blob/v${project.version}/"))
                     remoteLineSuffix.set("#L")
                 }
             }
@@ -222,25 +223,25 @@ subprojects {
     val projectName = if (project.name == "konf-all") "konf" else project.name
     val projectVersion = project.version as String
 
+    if (project.hasProperty("sonatypeUsername")) {
+        nexusPublishing {
+            repositories {
+                sonatype()
+            }
+        }
+    }
+
     publishing {
-        val repoUsername: String? by project
-        val repoPassword: String? by project
-        val repoUrl: String? by project
-
-        if (repoUrl == null || repoUsername == null || repoPassword == null)
-            return@publishing
-
         repositories {
             maven {
-                url = uri(repoUrl!!)
-                credentials {
-                    username = repoUsername
-                    password = repoPassword
-                }
+                val releasesRepoUrl = layout.buildDirectory.dir("repos/releases")
+                val snapshotsRepoUrl = layout.buildDirectory.dir("repos/snapshots")
+                val snapshot = project.version.toString().endsWith("-SNAPSHOT")
+                url = uri(if (snapshot) snapshotsRepoUrl else releasesRepoUrl)
             }
         }
 
-        val projectUrl: String by project
+        val projectUrl: String? by project
         publications {
             create<MavenPublication>("maven") {
                 from(components["java"])
@@ -280,6 +281,15 @@ subprojects {
                     }
                 }
             }
+        }
+    }
+
+    signing {
+        val signingKey = project.findProperty("signingKey")?.toString()
+        val signingPassword = project.findProperty("signingPassword")?.toString()
+        if (signingKey != null && signingPassword != null) {
+            useInMemoryPgpKeys(signingKey, signingPassword)
+            sign(publishing.publications["maven"])
         }
     }
 
