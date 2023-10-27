@@ -31,6 +31,7 @@ object Versions {
     const val taskTree = "1.5"
     const val toml4j = "0.7.2"
     const val yaml = "2.2"
+    const val nexusPublishPlugin = "1.1.0"
 
     // Since 1.8, the minimum supported runtime version is JDK 11.
     const val googleJavaFormat = "1.7"

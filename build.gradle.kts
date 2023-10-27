@@ -22,7 +22,15 @@ plugins {
     id("com.diffplug.spotless") version Versions.spotless
     id("com.github.ben-manes.versions") version Versions.dependencyUpdate
     id("org.jetbrains.dokka") version Versions.dokka
-    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("io.github.gradle-nexus.publish-plugin") version Versions.nexusPublishPlugin
+}
+
+nexusPublishing {
+    repositories {
+        if (project.hasProperty("sonatypeUsername")) {
+            sonatype()
+        }
+    }
 }
 
 allprojects {
@@ -222,14 +230,6 @@ subprojects {
     val projectGroup = project.group as String
     val projectName = if (project.name == "konf-all") "konf" else project.name
     val projectVersion = project.version as String
-
-    if (project.hasProperty("sonatypeUsername")) {
-        nexusPublishing {
-            repositories {
-                sonatype()
-            }
-        }
-    }
 
     publishing {
         repositories {
