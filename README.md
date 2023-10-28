@@ -3,8 +3,8 @@
 A type-safe cascading configuration library for Kotlin/Java/Android, supporting most configuration formats.
 
 This is a fork of the original project [konf](https://github.com/uchuhimo/konf) that is no 
-longer being updated. Changes in this fork compared to the original project can be found in 
-CHANGES.md
+longer being updated. Changes in this fork compared to the original project can be found in
+[CHANGES.md](./CHANGES.md)
 
 ## Features
 
@@ -78,77 +78,26 @@ Konf is modular, you can use different modules for different sources:
 
 ### Maven
 
+The dependencies can be found in the maven central repository.
+
 ```xml
 <dependency>
-  <groupId>com.uchuhimo</groupId>
+  <groupId>org.lanternpowered</groupId>
   <artifactId>konf</artifactId>
-  <version>1.1.2</version>
+  <version>2.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```groovy
-compile 'com.uchuhimo:konf:1.1.2'
+compile 'org.lanternpowered:konf:2.0.0-SNAPSHOT'
 ```
 
 ### Gradle Kotlin DSL
 
 ```kotlin
-compile(group = "com.uchuhimo", name = "konf", version = "1.1.2")
-```
-
-### Maven (master snapshot)
-
-Add JitPack repository to `<repositories>` section:
-
-```xml
-<repository>
-    <id>jitpack.io</id>
-    <url>https://jitpack.io</url>
-</repository>
-```
-
-Add dependencies:
-
-```xml
-<dependency>
-    <groupId>com.github.uchuhimo</groupId>
-    <artifactId>konf</artifactId>
-    <version>master-SNAPSHOT</version>
-</dependency>
-```
-
-### Gradle (master snapshot)
-
-Add JitPack repository:
-
-```groovy
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-```
-
-Add dependencies:
-
-```groovy
-compile 'com.github.uchuhimo.konf:konf:master-SNAPSHOT'
-```
-
-### Gradle Kotlin DSL (master snapshot)
-
-Add JitPack repository:
-
-```kotlin
-repositories {
-    maven(url = "https://jitpack.io")
-}
-```
-
-Add dependencies:
-
-```kotlin
-compile(group = "com.github.uchuhimo.konf", name = "konf", version = "master-SNAPSHOT")
+compile(group = "org.lanternpowered", name = "konf", version = "2.0.0-SNAPSHOT")
 ```
 
 ## Quick start
@@ -339,7 +288,7 @@ Create an empty new config:
 val config = Config()
 ```
 
-Or an new config with some initial actions:
+Or a new config with some initial actions:
 
 ```kotlin
 val config = Config { addSpec(Server) }
